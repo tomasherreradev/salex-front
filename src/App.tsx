@@ -6,6 +6,9 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import SignIn from './pages/SignIn';
 import OlvidePass from './pages/OlvidePass';
+import ResetPassword from './pages/ResetPassword';
+import ConfirmAcount from './pages/ConfirmAcount';
+
 import AuctionDetails from './pages/AuctionDetails';
 import Suscriptions from './pages/Suscriptions';
 import AboutUs from './pages/AboutUs';
@@ -19,6 +22,10 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/forgot-password" element={<OlvidePass />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/confirm-account" element={<ConfirmAcount />} />
+
+
           <Route path="/auction/:id" element={<AuctionDetails />} />
           <Route path="/suscriptions" element={<Suscriptions />} />
           <Route path="/about-us" element={<AboutUs />} />

@@ -1,18 +1,92 @@
+import { useState } from "react";
+import {Alert, AlertProps} from "../utilities/Alert";
 
 export default function Registro() {
+
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    telefono: '',
+    password: '',
+    documento: ''
+  });
+
+  const [alert, setAlert] = useState<AlertProps | null>(null)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const {id, value} = e.target;
+
+      setFormData((prevState) => ({
+        ...prevState,
+        [id]: value
+      }))
+  }
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const userData = {
+      ...formData,
+      categoria: 'usuario',
+      suscripcion_activa: false
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/users/create-new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData)
+      });
+
+      if(response.ok) {
+        setAlert({
+          message: 'Registro exitoso. Confirma tu cuenta!',
+          bgColor: 'green',
+          textColor: 'white',
+        });
+        
+      } else {
+        const data = await response.json();
+        setAlert({
+          message: data.error, // Mostrar el mensaje de error del backend
+          bgColor: 'red',
+          textColor: 'white',
+        });
+      }
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
-<div className="flex items-center justify-center">
-      <div className="bg-transparent rounded-lg p-10 w-full max-w-[430px]">
+    <div className="flex items-center justify-center">
+      <div className="bg-transparent rounded-lg p-10 w-full max-w-[430px] relative">
         <h1 className="text-[40px] leading-10 font-black text-gray-700 mb-12 text-center">Registrate</h1>
-        <form>
+
+        {alert && (
+          <Alert
+            message={alert.message}
+            bgColor={alert.bgColor}
+            textColor={alert.textColor}
+            onClose={() => setAlert(null)}
+          />
+        )}
+
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">
-              Nombre completa <span className='text-red-600'>*</span>
+              Nombre completo <span className='text-red-600'>*</span>
             </label>
             <input
               type="text"
               id="nombre"
               placeholder='John Doe'
+              value={formData.nombre}
+              onChange={handleChange}
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 
             />
@@ -26,6 +100,8 @@ export default function Registro() {
               type="email"
               id="email"
               placeholder='user@example.com'
+              value={formData.email}
+              onChange={handleChange}
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 
             />
@@ -38,7 +114,9 @@ export default function Registro() {
             <input
               type="phone"
               id="telefono"
-              placeholder='000 000 00 00'
+              placeholder='+00 0 0000 000000'
+              value={formData.telefono}
+              onChange={handleChange}
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 
             />
@@ -52,6 +130,8 @@ export default function Registro() {
               type="password"
               id="password"
               placeholder='983jkf0248'
+              value={formData.password}
+              onChange={handleChange}
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 
             />
@@ -65,6 +145,8 @@ export default function Registro() {
               type="number"
               id="documento"
               placeholder='example pattern'
+              value={formData.documento}
+              onChange={handleChange}
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 
             />

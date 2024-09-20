@@ -1,22 +1,41 @@
-import { useState } from "react"
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function OlvidePass() {
+export default function ResetPassword() {
 
-  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+  const [password, setPassword] = useState('');
+  const [token, setToken] = useState('');
+  const [formSubmited, setFormSubmited] = useState(false);
+
+  useEffect(()=> {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get('token');
+
+    if(tokenFromUrl) {
+      setToken(tokenFromUrl);
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if(formSubmited) {
+      return
+    }
+
     try {
-      const response = await fetch('http://localhost:5000/users/forgot-password', {
+      const response = await fetch('http://localhost:5000/users/reset-password', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, newPassword: password })
       });
 
       const data = await response.json();
 
-      if(response.ok) {
-        console.log('Correo Enviado')
+      if (response.ok) {
+        console.log('contraseña actualizada')
+        setFormSubmited(true);
+        navigate('/login')
       } else {
         console.log(data.error)
       }
@@ -32,16 +51,15 @@ export default function OlvidePass() {
         <h1 className="text-[40px] leading-10 font-black text-gray-700 mb-12 text-center">Recuperar Cuenta</h1>
         <form className="max-w-[350px] mx-auto" onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
-              Email <span className='text-red-600'>*</span>
+            <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+              Ingresa tu nuevo password:
             </label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              placeholder='user@example.com'
+              type="password"
+              id="password"
+              placeholder='983jkf0248'
+              onChange={(e) => setPassword(e.target.value)}
               className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -51,7 +69,8 @@ export default function OlvidePass() {
             </a>
             <button
               type="submit"
-              className="bg-[#0056B3] text-white hover:bg-white hover:text-[#0056B3] py-2 px-4 border rounded transition-all"
+              className="bg-[#0056B3] text-white hover:bg-white hover:text-[#0056B3] py-2 px-4 border rounded transition-all disabled:opacity-50 disabled:hover:bg-[#0056B3] disabled:hover:text-white"
+              disabled={formSubmited}
             >
               Continuar
             </button>
