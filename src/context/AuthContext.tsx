@@ -8,6 +8,7 @@ interface User {
   categoria: string;
   suscripcion_activa: boolean;
   confirmada: boolean;
+  foto: string
 }
 
 interface AuthContextProps {

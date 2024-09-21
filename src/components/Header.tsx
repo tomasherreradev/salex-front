@@ -38,11 +38,22 @@ const Header: React.FC = () => {
         <nav className='border-l pl-6 flex-shrink-0'>
           {user ? (
             <li className='flex items-center gap-4'>
-              <Link to="/me" className="xl:text-xs 2xl:text-base"><span className='font-bold'>Bienvenido</span>, {user ? user.nombre : 'Invitado'}</Link>
-              <div className='w-12 h-12 bg-[#0056B3] rounded-full flex justify-center items-center'>
-                  <PersonIcon style={{width: '80%', height: 'auto', color: '#FFFFFF'}}></PersonIcon>
+              <Link to="/me" className="xl:text-xs 2xl:text-base">
+                <span className='font-bold'>Bienvenido</span>, {user ? user.nombre : 'Invitado'}
+              </Link>
+              {user && user.foto ? (
+                <img
+                  src={`${import.meta.env.VITE_SALEX_BACK_API_URL}${user.foto}`}
+                  alt="Foto de perfil"
+                  className='w-12 h-12 rounded-full object-cover'
+                />
+              ) : (
+                <div className='w-12 h-12 bg-[#0056B3] rounded-full flex justify-center items-center'>
+                  <PersonIcon style={{ width: '80%', height: 'auto', color: '#FFFFFF' }} />
                 </div>
+              )}
             </li>
+
           ) : (
             <ul className="flex items-center space-x-8 text-black">
               <li>
@@ -54,9 +65,9 @@ const Header: React.FC = () => {
               <li className='flex items-center gap-4'>
                 <Link to="/signin" className="xl:text-xs 2xl:text-base">Invitado</Link>
                 <div className='w-12 h-12 bg-[#0056B3] rounded-full flex justify-center items-center'>
-                  <PersonIcon style={{width: '80%', height: 'auto', color: '#FFFFFF'}}></PersonIcon>
+                  <PersonIcon style={{ width: '80%', height: 'auto', color: '#FFFFFF' }}></PersonIcon>
                 </div>
-              </li> 
+              </li>
             </ul>
           )}
         </nav>

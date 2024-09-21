@@ -38,7 +38,9 @@ const SignIn: React.FC = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json();        
+        console.log(data.user)
+
         login(data.token, data.user); // Llama a login aquí
 
         setAlert({
