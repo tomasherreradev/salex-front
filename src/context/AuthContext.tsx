@@ -14,6 +14,7 @@ interface AuthContextProps {
   user: User | null;
   login: (token: string, userData: User) => void;
   logout: () => void;
+  updateUserContext: (updatedUser: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -40,8 +41,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
+  const updateUserContext = (updatedUser: Partial<User>) => {
+    if (user) {
+      const newUser = { ...user, ...updatedUser };  // Combina el usuario actual con los campos actualizados
+      setUser(newUser);
+      localStorage.setItem('user', JSON.stringify(newUser));  // Actualiza también en localStorage
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUserContext }}>
       {children}
     </AuthContext.Provider>
   );

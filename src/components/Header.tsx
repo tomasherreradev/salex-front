@@ -38,7 +38,7 @@ const Header: React.FC = () => {
         <nav className='border-l pl-6 flex-shrink-0'>
           {user ? (
             <li className='flex items-center gap-4'>
-              <Link to="/me" className="xl:text-xs 2xl:text-base">Bienvenido, {user ? user.nombre : 'Invitado'}</Link>
+              <Link to="/me" className="xl:text-xs 2xl:text-base"><span className='font-bold'>Bienvenido</span>, {user ? user.nombre : 'Invitado'}</Link>
               <div className='w-12 h-12 bg-[#0056B3] rounded-full flex justify-center items-center'>
                   <PersonIcon style={{width: '80%', height: 'auto', color: '#FFFFFF'}}></PersonIcon>
                 </div>

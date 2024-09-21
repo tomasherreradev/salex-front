@@ -8,6 +8,7 @@ import SignIn from './pages/SignIn';
 import OlvidePass from './pages/OlvidePass';
 import ResetPassword from './pages/ResetPassword';
 import ConfirmAcount from './pages/ConfirmAcount';
+import Profile from './pages/Profile';
 
 import AuctionDetails from './pages/AuctionDetails';
 import Suscriptions from './pages/Suscriptions';
@@ -29,6 +30,7 @@ const App: React.FC = () => {
           <Route path="/auction/:id" element={<AuctionDetails />} />
           <Route path="/suscriptions" element={<Suscriptions />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/me" element={<Profile />} />
         </Routes>
       </Layout>
     </Router>
