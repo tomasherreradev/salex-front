@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Alert, AlertProps } from "../utilities/Alert"
+import { useUser } from "../context/AuthContext";
+import useCustomNavigate from "../hooks/useCustomNavigate";
 
 const SignIn: React.FC = () => {
 
@@ -7,8 +9,13 @@ const SignIn: React.FC = () => {
     email: '',
     password: ''
   });
-
   const [alert, setAlert] = useState<AlertProps | null>(null);
+
+
+  const { login } = useUser(); // Obtén la función login del contexto
+  const {goTo} = useCustomNavigate();
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -31,11 +38,16 @@ const SignIn: React.FC = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        login(data.token, data.user); // Llama a login aquí
+
         setAlert({
           message: 'Inicio de sesión exitoso!',
           bgColor: 'green',
           textColor: 'white',
         });
+
+        goTo('/', undefined, 1000);
       } else {
         const errorData = await response.json();
         setAlert({
@@ -43,6 +55,8 @@ const SignIn: React.FC = () => {
           bgColor: 'red',
           textColor: 'white',
         });
+
+
       }
       
     } catch (error) {

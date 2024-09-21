@@ -1,9 +1,13 @@
 import React from 'react';
 import MobileHeader from './MobileNav';
-import logo from './../assets/images/svg/logo.svg'
+import logo from './../assets/images/svg/logo.svg';
+import PersonIcon from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
+import { useUser } from '../context/AuthContext';
 
 const Header: React.FC = () => {
+  const { user } = useUser();
+
   return (
     <header className="text-[#0056B3] px-5 xl:px-14 py-2 shadow-small text-sm xl:text-base">
       <div className="lg:flex items-center justify-between hidden">
@@ -32,25 +36,35 @@ const Header: React.FC = () => {
         </div>
 
         <nav className='border-l pl-6 flex-shrink-0'>
-          <ul className="flex items-center space-x-8 text-black">
-            <li>
-              <Link to="/login" className=" lg:text-xs 2xl:text-base">Inicio de Sesión</Link>
-            </li>
-            <li>
-              <Link to="/signin" className=" bg-yellow-400 p-4 rounded-xl lg:text-xs 2xl:text-base">Regístrate</Link>
-            </li>
+          {user ? (
             <li className='flex items-center gap-4'>
-              <Link to="/signin" className="xl:text-xs 2xl:text-base">UserName</Link>
-              <div className='w-12 h-12 bg-[#0056B3] rounded-full'></div>
-            </li> 
-          </ul>
+              <Link to="/me" className="xl:text-xs 2xl:text-base">Bienvenido, {user ? user.nombre : 'Invitado'}</Link>
+              <div className='w-12 h-12 bg-[#0056B3] rounded-full flex justify-center items-center'>
+                  <PersonIcon style={{width: '80%', height: 'auto', color: '#FFFFFF'}}></PersonIcon>
+                </div>
+            </li>
+          ) : (
+            <ul className="flex items-center space-x-8 text-black">
+              <li>
+                <Link to="/login" className=" lg:text-xs 2xl:text-base">Inicio de Sesión</Link>
+              </li>
+              <li>
+                <Link to="/signin" className=" bg-yellow-400 p-4 rounded-xl lg:text-xs 2xl:text-base">Regístrate</Link>
+              </li>
+              <li className='flex items-center gap-4'>
+                <Link to="/signin" className="xl:text-xs 2xl:text-base">Invitado</Link>
+                <div className='w-12 h-12 bg-[#0056B3] rounded-full flex justify-center items-center'>
+                  <PersonIcon style={{width: '80%', height: 'auto', color: '#FFFFFF'}}></PersonIcon>
+                </div>
+              </li> 
+            </ul>
+          )}
         </nav>
       </div>
 
-      <MobileHeader/>
-
+      <MobileHeader />
     </header>
   );
-}
+};
 
 export default Header;
