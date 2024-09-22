@@ -15,6 +15,7 @@ import Profile from './pages/Profile';
 import AuctionDetails from './pages/AuctionDetails';
 import Suscriptions from './pages/Suscriptions';
 import AboutUs from './pages/AboutUs';
+import Auctions from './pages/Auctions';
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/subastas" element={<Auctions />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/forgot-password" element={<OlvidePass />} />
