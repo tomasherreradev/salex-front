@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, AlertProps } from '../utilities/Alert';
 import { useUser } from '../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const Profile: React.FC = () => {
     const { user, updateUserContext } = useUser();
@@ -12,7 +12,6 @@ const Profile: React.FC = () => {
     const [phone, setPhone] = useState<string>('');
     const [document, setDocument] = useState<string>('');
     const [profileImage, setProfileImage] = useState<File | null>(null);
-    const [alert, setAlert] = useState<AlertProps | null>(null);
 
     useEffect(() => {
         console.log(user)
@@ -59,28 +58,36 @@ const Profile: React.FC = () => {
             console.log(data)
 
             if (!response.ok) {
-                setAlert({
-                    message: data.error,
-                    bgColor: 'red',
-                    textColor: 'white',
-                });
+                toast.error(`Error: ${data.error}`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    style: {
+                      backgroundColor: '#4D171A',
+                      color: '#ffffff', 
+                    }
+                  });
                 throw new Error(data.error);
             }
 
-            // Actualiza el contexto con los nuevos datos
+           
             updateUserContext({ 
                 nombre: name, 
                 email, 
                 telefono: phone, 
                 documento: document, 
-                foto: data.foto || user.foto // Asegúrate de actualizar la foto si está disponible
+                foto: data.foto || user?.foto
             });
 
-            setAlert({
-                message: 'Datos actualizados correctamente',
-                bgColor: 'green',
-                textColor: 'white',
-            });
+            toast.success('Actualización Completa', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: true,
+                style: {
+                  backgroundColor: '#1C3022',
+                  color: '#ffffff',
+                }
+              })
 
         } catch (error) {
             console.error('Error al actualizar los datos:', error);
@@ -95,25 +102,6 @@ const Profile: React.FC = () => {
     return (
         <div className="container mx-auto p-8">
             <h1 className="text-4xl font-black mb-8">Perfil</h1>
-
-            {user && user.foto && (
-                <div className="mb-6">
-                    <img
-                        src={`http://localhost:5000${user.foto}`} // Ajusta según la configuración de tu backend
-                        alt="Foto de Perfil"
-                        className="w-40 h-40 object-cover rounded-full"
-                    />
-                </div>
-            )}
-
-            {alert && (
-                <Alert
-                    message={alert.message}
-                    bgColor={alert.bgColor}
-                    textColor={alert.textColor}
-                    onClose={() => setAlert(null)}
-                />
-            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>

@@ -1,6 +1,8 @@
 // src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -17,6 +19,7 @@ import AboutUs from './pages/AboutUs';
 const App: React.FC = () => {
   return (
     <Router>
+      <ToastContainer />
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />

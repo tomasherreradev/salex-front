@@ -1,5 +1,6 @@
 import { useState } from "react";
-import {Alert, AlertProps} from "../utilities/Alert";
+import { toast } from "react-toastify";
+import useCustomNavigate from "../hooks/useCustomNavigate";
 
 export default function Registro() {
 
@@ -10,8 +11,7 @@ export default function Registro() {
     password: '',
     documento: ''
   });
-
-  const [alert, setAlert] = useState<AlertProps | null>(null)
+  const {goTo} = useCustomNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const {id, value} = e.target;
@@ -42,18 +42,29 @@ export default function Registro() {
       });
 
       if(response.ok) {
-        setAlert({
-          message: 'Registro exitoso. Confirma tu cuenta!',
-          bgColor: 'green',
-          textColor: 'white',
-        });
+        toast.success('Registro Exitoso, Confirma Tu Email', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          style: {
+            backgroundColor: '#1C3022', // Color de fondo en hexadecimal
+            color: '#ffffff', // Color del texto en hexadecimal
+          }
+        })
+
+        
+        goTo('/login', undefined, 1000);
         
       } else {
         const data = await response.json();
-        setAlert({
-          message: data.error, // Mostrar el mensaje de error del backend
-          bgColor: 'red',
-          textColor: 'white',
+        toast.error(`Error: ${data.error}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          style: {
+            backgroundColor: '#4D171A', // Color de fondo en hexadecimal
+            color: '#ffffff', // Color del texto en hexadecimal
+          }
         });
       }
 
@@ -66,15 +77,6 @@ export default function Registro() {
     <div className="flex items-center justify-center">
       <div className="bg-transparent rounded-lg p-10 w-full max-w-[430px] relative">
         <h1 className="text-[40px] leading-10 font-black text-gray-700 mb-12 text-center">Registrate</h1>
-
-        {alert && (
-          <Alert
-            message={alert.message}
-            bgColor={alert.bgColor}
-            textColor={alert.textColor}
-            onClose={() => setAlert(null)}
-          />
-        )}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

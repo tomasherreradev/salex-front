@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Alert, AlertProps } from "../utilities/Alert"
 import { useUser } from "../context/AuthContext";
 import useCustomNavigate from "../hooks/useCustomNavigate";
+import {toast} from 'react-toastify';
 
 const SignIn: React.FC = () => {
 
@@ -9,12 +9,10 @@ const SignIn: React.FC = () => {
     email: '',
     password: ''
   });
-  const [alert, setAlert] = useState<AlertProps | null>(null);
 
 
   const { login } = useUser(); // Obtén la función login del contexto
   const {goTo} = useCustomNavigate();
-
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,19 +41,27 @@ const SignIn: React.FC = () => {
 
         login(data.token, data.user); // Llama a login aquí
 
-        setAlert({
-          message: 'Inicio de sesión exitoso!',
-          bgColor: 'green',
-          textColor: 'white',
-        });
+        toast.success('Iniciaste Sesión', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          style: {
+            backgroundColor: '#1C3022', // Color de fondo en hexadecimal
+            color: '#ffffff', // Color del texto en hexadecimal
+          }
+        })
 
         goTo('/', undefined, 1000);
       } else {
         const errorData = await response.json();
-        setAlert({
-          message: errorData.error,
-          bgColor: 'red',
-          textColor: 'white',
+        toast.error(`Error: ${errorData.error}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          style: {
+            backgroundColor: '#4D171A', // Color de fondo en hexadecimal
+            color: '#ffffff', // Color del texto en hexadecimal
+          }
         });
 
 
@@ -71,16 +77,6 @@ const SignIn: React.FC = () => {
     <div className="flex items-center justify-center">
       <div className="bg-transparent rounded-lg p-10 w-full max-w-[430px]">
         <h1 className="text-[40px] leading-10 font-black text-gray-700 mb-12 text-center">Inicia Sesión</h1>
-
-        {alert && (
-          <Alert
-            message={alert.message}
-            bgColor={alert.bgColor}
-            textColor={alert.textColor}
-            onClose={() => setAlert(null)}
-          />
-        )}
-
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
