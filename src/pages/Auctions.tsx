@@ -9,7 +9,7 @@ const Auctions = () => {
   return (
       <>
         <AuctionSearch/>
-        <UpcomingActions/>;ç
+        <UpcomingActions/>;
         <ActionTable/>;
       </>
   );
