@@ -11,8 +11,8 @@ const SignIn: React.FC = () => {
   });
 
 
-  const { login } = useUser(); // Obtén la función login del contexto
-  const {goTo} = useCustomNavigate();
+  const { login } = useUser(); 
+  const { goTo } = useCustomNavigate();
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,17 +37,17 @@ const SignIn: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();        
-        console.log(data.user)
+        // console.log(data.user)
 
-        login(data.token, data.user); // Llama a login aquí
+        login(data.token, data.user); 
 
         toast.success('Iniciaste Sesión', {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: true,
           style: {
-            backgroundColor: '#1C3022', // Color de fondo en hexadecimal
-            color: '#ffffff', // Color del texto en hexadecimal
+            backgroundColor: '#1C3022', 
+            color: '#ffffff', 
           }
         })
 
@@ -59,8 +59,8 @@ const SignIn: React.FC = () => {
           autoClose: 3000,
           hideProgressBar: true,
           style: {
-            backgroundColor: '#4D171A', // Color de fondo en hexadecimal
-            color: '#ffffff', // Color del texto en hexadecimal
+            backgroundColor: '#4D171A', 
+            color: '#ffffff', 
           }
         });
 
@@ -68,7 +68,15 @@ const SignIn: React.FC = () => {
       }
       
     } catch (error) {
-      console.log(error)
+      toast.error(`Error: ${error}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        style: {
+          backgroundColor: '#4D171A', 
+          color: '#ffffff', 
+        }
+      });
     }
 
   }

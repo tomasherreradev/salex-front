@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import carsHomeImage2 from './../assets/images/jpg/cars-home-2.jpg';
-
+import { useUser } from '../context/AuthContext';
 
 const UpcomingActions = () => {
+
+  const {user} = useUser();
 
   return (
     <section className="flex flex-col md:flex-row w-full px-20  h-auto md:h-[415px]">
@@ -19,9 +21,12 @@ const UpcomingActions = () => {
       </h1>
       <p className="text-4xl lg:text-5xl font-black uppercase text-center mt-2 lg:mt-4">6:00PM</p>
 
-      <Link to={'/signin'} className="bg-[#FFC940] p-2 text-black rounded-md mt-6 lg:mt-10 text-lg lg:text-xl">
-        Regístrate Ahora
-      </Link>
+      {user ? ('') : (
+        <Link to={'/signin'} className="bg-[#FFC940] p-2 text-black rounded-md mt-6 lg:mt-10 text-lg lg:text-xl">
+            Regístrate Ahora
+        </Link>
+      )}
+
     </div>
   </section>
   
