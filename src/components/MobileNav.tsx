@@ -3,9 +3,14 @@ import { Link } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton, ListItemText } from '@mui/material';
+import logo from './../assets/images/svg/logo.svg';
+import { useUser } from '../context/AuthContext';
+import { toast } from 'react-toastify';
+
 
 export default function MobileHeader() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const { user, logout } = useUser();
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -15,10 +20,24 @@ export default function MobileHeader() {
         setMenuOpen(false);
     };
 
+    const handleLogout = () => {
+        logout();
+        closeMenu();
+        toast.success('Cerraste Sesión', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            style: {
+              backgroundColor: '#1C3022', 
+              color: '#ffffff', 
+            }
+          })
+    };
+
     return (
         <div className='lg:hidden flex justify-between items-center'>
             <Link to="/">
-                <img className='w-full max-w-[160px] h-auto' src="src\assets\images\svg\logo.svg" alt="logo" />
+                <img className='w-full max-w-[160px] h-auto' src={logo} alt="logo" />
             </Link>
 
             <div style={{ position: 'relative' }}>
@@ -48,29 +67,40 @@ export default function MobileHeader() {
                 }}
             >
                 <ul style={{ padding: 0, textAlign: 'center' }}>
-                    {[
+                    {[                        
                         { to: '/', label: 'Inicio' },
                         { to: '/subastas', label: 'Subastas' },
                         { to: '/mis-subastas', label: 'Mis Subastas' },
                         { to: '/about-us', label: 'Quiénes Somos' },
                         { to: '/suscriptions', label: 'Suscripciones' },
-                        { to: '/login', label: 'Inicio de Sesión' },
-                        { to: '/signin', label: 'Regístrate', signin: true },
-                    ].map((item) => (
+                        user ? { to: '/me', label: `Bienvenido, ${user.nombre}` } : { to: '/login', label: 'Inicio de Sesión' },
+                        user ? { label: 'Cerrar Sesión', yellowButton: true, logOut: true } : { to: '/signin', label: 'Regístrate', yellowButton: true },
+                    ].map((item, index) => (
                         <li
-                            key={item.to}
+                            key={index}
                             style={{ marginBottom: 0, color: '#fff', padding: '0' }}
                             onClick={closeMenu}
                         >
-                            <Link
-                                to={item.to}
-                                className={`block w-full text-center font-normal px-3 py-5 rounded-lg text-black hover:bg-[#0056B3] hover:text-white 
-                                    ${item.signin ? 'bg-yellow-500 hover:bg-yellow-300 hover:text-black' : ''}
-                                `}
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <ListItemText primary={item.label} />
-                            </Link>
+                            {item.logOut ? (
+                                <button
+                                    onClick={handleLogout}
+                                    className={`block w-full text-center font-normal px-3 py-5 rounded-lg text-black hover:bg-[#0056B3] hover:text-white 
+                                        ${item.yellowButton ? 'bg-yellow-500 hover:bg-yellow-300 hover:text-black' : ''}`}
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    <ListItemText primary={item.label} />
+                                </button>
+                            ) : (
+                                <Link
+                                    to={item.to}
+                                    className={`block w-full text-center font-normal px-3 py-5 rounded-lg text-black hover:bg-[#0056B3] hover:text-white 
+                                        ${item.yellowButton ? 'bg-yellow-500 hover:bg-yellow-300 hover:text-black' : ''} 
+                                    `}
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    <ListItemText primary={item.label} />
+                                </Link>
+                            )}
                         </li>
                     ))}
                 </ul>

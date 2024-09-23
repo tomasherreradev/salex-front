@@ -47,8 +47,8 @@ export default function Registro() {
           autoClose: 3000,
           hideProgressBar: true,
           style: {
-            backgroundColor: '#1C3022', // Color de fondo en hexadecimal
-            color: '#ffffff', // Color del texto en hexadecimal
+            backgroundColor: '#1C3022', 
+            color: '#ffffff', 
           }
         })
 
@@ -62,8 +62,8 @@ export default function Registro() {
           autoClose: 3000,
           hideProgressBar: true,
           style: {
-            backgroundColor: '#4D171A', // Color de fondo en hexadecimal
-            color: '#ffffff', // Color del texto en hexadecimal
+            backgroundColor: '#4D171A', 
+            color: '#ffffff', 
           }
         });
       }

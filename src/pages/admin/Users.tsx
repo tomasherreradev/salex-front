@@ -1,6 +1,6 @@
 import React from 'react';
 import Table from '../../components/Table';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import usePagination from '../../hooks/usePagination';
 
 const Users: React.FC = () => {
@@ -54,9 +54,9 @@ const Users: React.FC = () => {
     <div>
       <div className="flex justify-between mb-4">
         <h2 className="text-3xl font-bold">Gestión de <span className="text-[#0056B3]">Usuarios</span></h2>
-        <div className="bg-green-800 text-white p-2 rounded-xl hover:bg-green-950 transition-colors">
+        {/* <div className="bg-green-800 text-white p-2 rounded-xl hover:bg-green-950 transition-colors">
           <Link to="/admin/users/create">Agregar Usuario</Link>
-        </div>
+        </div> */}
       </div>
 
       <Table data={currentItems} headers={headers} onEdit={handleEdit} onDelete={handleDelete} />
