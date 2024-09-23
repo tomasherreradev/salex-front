@@ -26,7 +26,7 @@ const CreateAuction: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Crear un FormData para enviar los datos
+        // formData para enviar los datos
         const data = {
             auto_id: formData.auto_id,
             precio_inicial: parseFloat(formData.precio_inicial),

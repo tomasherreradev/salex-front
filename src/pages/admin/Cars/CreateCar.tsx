@@ -1,18 +1,27 @@
-// src/pages/admin/CreateCar.tsx
-
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
+interface FormData {
+    marca: string;
+    modelo: string;
+    year: string;
+    estado_actual: string;
+    kilometraje: string;
+    foto: File | null; // Asegúrate de que el tipo sea File | null
+    notas: string;
+}
+
 const CreateCar: React.FC = () => {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         marca: '',
         modelo: '',
         year: '',
-        estado_actual: 'nuevo', // Valor por defecto
+        estado_actual: 'nuevo',
         kilometraje: '',
         foto: null,
         notas: ''
     });
+    const token = localStorage.getItem('token');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -23,11 +32,11 @@ const CreateCar: React.FC = () => {
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setFormData({
-            ...formData,
-            foto: file
-        });
+        const file = e.target.files?.[0] || null; // Esto permite que file sea de tipo File o null
+        setFormData(prevState => ({
+            ...prevState,
+            foto: file // Aquí se asigna file directamente
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -46,9 +55,19 @@ const CreateCar: React.FC = () => {
         data.append('notas', formData.notas);
 
         try {
-            // Aquí puedes hacer la llamada a la API para agregar el vehículo
-            // const response = await api.addCar(data);
-            // Si es exitoso:
+            const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/create-new`, {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Authorization': `Bearer ${token}` // No agregar 'Content-Type'
+                },
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(`Error: ${data.message}`);
+            }
+
             toast.success('Vehículo agregado con éxito!');
             setFormData({
                 marca: '',
@@ -60,12 +79,12 @@ const CreateCar: React.FC = () => {
                 notas: ''
             });
         } catch (error) {
-            toast.error('Error al agregar el vehículo.');
+            toast.error(`${error}`);
         }
     };
 
     return (
-        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className="max-w-md mx-auto p-6 bg-white rounded-lg">
             <h1 className="text-2xl font-bold text-center mb-6">Agregar Vehículo</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">

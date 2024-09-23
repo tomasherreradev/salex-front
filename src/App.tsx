@@ -20,10 +20,14 @@ import Auctions from './pages/Auctions';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminHome from './pages/admin/AdminHome';
 import Users from './pages/admin/Users';
-import Cars from './pages/admin/Cars';
-import AuctionsAdm from './pages/admin/AuctionsAdm';
-import CreateCar from './pages/admin/CreateCar';
-import CreateAuction from './pages/admin/CreateAuction';
+import Cars from './pages/admin/Cars/Cars';
+import CreateCar from './pages/admin/Cars/CreateCar';
+import EditCar from './pages/admin/Cars/EditCar';
+
+import AuctionsAdm from './pages/admin/Auctions/AuctionsAdm';
+import CreateAuction from './pages/admin/Auctions/CreateAuction';
+import EditAuction from './pages/admin/Auctions/EditAuction';
+
 
 // protected routes
 import ProtectedRoute from './hooks/useProtectedRoutes';
@@ -47,13 +51,17 @@ const App: React.FC = () => {
           <Route path="/me" element={<Profile />} />
 
           {/* admin routes */}
-          <Route element={<AdminLayout />}>
+          <Route element={<ProtectedRoute><AdminLayout/></ProtectedRoute>}>
             <Route path="/admin" element={<ProtectedRoute><AdminHome /></ProtectedRoute>} />
             <Route path="/admin/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
             <Route path="/admin/cars" element={<ProtectedRoute><Cars /></ProtectedRoute>} />
-            <Route path="/admin/auctions" element={<ProtectedRoute><AuctionsAdm /></ProtectedRoute>} />
             <Route path="/admin/cars/create" element={<ProtectedRoute><CreateCar /></ProtectedRoute>} />
+            <Route path="/admin/cars/edit/:id" element={<ProtectedRoute><EditCar /></ProtectedRoute>} />
+
+
+            <Route path="/admin/auctions" element={<ProtectedRoute><AuctionsAdm /></ProtectedRoute>} />
             <Route path="/admin/auctions/create" element={<ProtectedRoute><CreateAuction /></ProtectedRoute>} />
+            <Route path="/admin/auction/edit/:id" element={<ProtectedRoute><EditAuction /></ProtectedRoute>} />
           </Route>
         </Routes>
       </Layout>
