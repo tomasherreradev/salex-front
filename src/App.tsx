@@ -19,7 +19,6 @@ import Auctions from './pages/Auctions';
 // admin routes
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminHome from './pages/admin/AdminHome';
-import Users from './pages/admin/Users';
 import Cars from './pages/admin/Cars/Cars';
 import CreateCar from './pages/admin/Cars/CreateCar';
 import EditCar from './pages/admin/Cars/EditCar';
@@ -27,6 +26,9 @@ import EditCar from './pages/admin/Cars/EditCar';
 import AuctionsAdm from './pages/admin/Auctions/AuctionsAdm';
 import CreateAuction from './pages/admin/Auctions/CreateAuction';
 import EditAuction from './pages/admin/Auctions/EditAuction';
+
+import Users from './pages/admin/Users/Users';
+import CreateUser from './pages/admin/Users/CreateUser';
 
 
 // protected routes
@@ -53,7 +55,6 @@ const App: React.FC = () => {
           {/* admin routes */}
           <Route element={<ProtectedRoute><AdminLayout/></ProtectedRoute>}>
             <Route path="/admin" element={<ProtectedRoute><AdminHome /></ProtectedRoute>} />
-            <Route path="/admin/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
             <Route path="/admin/cars" element={<ProtectedRoute><Cars /></ProtectedRoute>} />
             <Route path="/admin/cars/create" element={<ProtectedRoute><CreateCar /></ProtectedRoute>} />
             <Route path="/admin/cars/edit/:id" element={<ProtectedRoute><EditCar /></ProtectedRoute>} />
@@ -62,6 +63,11 @@ const App: React.FC = () => {
             <Route path="/admin/auctions" element={<ProtectedRoute><AuctionsAdm /></ProtectedRoute>} />
             <Route path="/admin/auctions/create" element={<ProtectedRoute><CreateAuction /></ProtectedRoute>} />
             <Route path="/admin/auction/edit/:id" element={<ProtectedRoute><EditAuction /></ProtectedRoute>} />
+
+
+            <Route path="/admin/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
+            <Route path="/admin/users/create" element={<ProtectedRoute><CreateUser /></ProtectedRoute>} />
+
           </Route>
         </Routes>
       </Layout>

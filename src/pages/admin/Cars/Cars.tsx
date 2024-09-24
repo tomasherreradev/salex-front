@@ -3,32 +3,32 @@ import Table from '../../../components/Table';
 import { Link } from 'react-router-dom';
 import usePagination from '../../../hooks/usePagination';
 import { toast } from 'react-toastify';
+import { confirmAlert } from 'react-confirm-alert'; // Importar react-confirm-alert
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Importar los estilos por defecto
 import type { Car } from '../../../types';
 import useCustomNavigate from '../../../hooks/useCustomNavigate';
-
-
 
 const Cars: React.FC = () => {
   const [carsData, setCarsData] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
-  const {goTo} = useCustomNavigate();
+  const { goTo } = useCustomNavigate();
 
   const headers = ['id', 'marca', 'modelo', 'year', 'estado_actual', 'kilometraje', 'notas'];
 
-  // Paginacion
+  // Paginación
   const { currentItems, paginate, currentPage, totalPages } = usePagination(carsData, 10);
 
-
   useEffect(() => {
-    fetchCars()
+    fetchCars();
   }, []);
 
   const fetchCars = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/get-all`);
       if (!response.ok) {
-        throw new Error('Error al obtener los autos');
+        toast.error('Se produjo un error al obtener los datos');
+        return;
       }
       const data = await response.json();
       setCarsData(data);
@@ -44,27 +44,45 @@ const Cars: React.FC = () => {
   };
 
   const handleEdit = (id: number) => {
-    goTo(`/admin/cars/edit/${id}`)
+    goTo(`/admin/cars/edit/${id}`);
   };
 
-  const handleDelete = async (id: number) => {
-    const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/delete/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
+  const handleDelete = (id: number) => {
+    // Confirmar antes de eliminar
+    confirmAlert({
+      title: 'Confirmar eliminación',
+      message: '¿Estás seguro de que deseas eliminar este vehículo?',
+      buttons: [
+        {
+          label: 'Sí',
+          onClick: async () => {
+            try {
+              const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+              });
+              if (response.ok) {
+                toast.success('Vehículo eliminado correctamente');
+                fetchCars(); // Refrescar la lista después de eliminar
+              } else {
+                const data = await response.json();
+                toast.error(`Error: ${data.message || 'Error al eliminar el vehículo'}`);
+              }
+            } catch (error) {
+              toast.error('Se produjo un error al intentar eliminar el vehículo');
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => toast.info('Eliminación cancelada')
+        }
+      ]
     });
-    if (response.ok) {
-      toast.success('Vehiculo eliminado');
-      fetchCars();
-    } else {
-      const data = await response.json();
-      toast.error(`Error: ${data.message || 'Error al eliminar vehiculo'}`);
-    }
   };
-
-
 
   if (loading) {
     return <div>Cargando...</div>;

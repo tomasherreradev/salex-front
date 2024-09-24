@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import useCustomNavigate from "../hooks/useCustomNavigate";
+import Loading from 'react-loading'; // Importa el spinner
 
 export default function Registro() {
-
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
@@ -11,26 +11,28 @@ export default function Registro() {
     password: '',
     documento: ''
   });
-  const {goTo} = useCustomNavigate();
+  
+  const { goTo } = useCustomNavigate();
+  const [isLoading, setIsLoading] = useState(false); // Estado para manejar la carga
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const {id, value} = e.target;
+    const { id, value } = e.target;
 
-      setFormData((prevState) => ({
-        ...prevState,
-        [id]: value
-      }))
-  }
-
+    setFormData((prevState) => ({
+      ...prevState,
+      [id]: value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true); // Activa el spinner de carga
 
     const userData = {
       ...formData,
       categoria: 'usuario',
       suscripcion_activa: false
-    }
+    };
 
     try {
       const response = await fetch('http://localhost:5000/users/create-new', {
@@ -41,7 +43,7 @@ export default function Registro() {
         body: JSON.stringify(userData)
       });
 
-      if(response.ok) {
+      if (response.ok) {
         toast.success('Registro Exitoso, Confirma Tu Email', {
           position: "top-right",
           autoClose: 3000,
@@ -50,9 +52,8 @@ export default function Registro() {
             backgroundColor: '#1C3022', 
             color: '#ffffff', 
           }
-        })
+        });
 
-        
         goTo('/login', undefined, 1000);
         
       } else {
@@ -69,9 +70,20 @@ export default function Registro() {
       }
 
     } catch (error) {
-      console.error(error)
+      console.error(error);
+      toast.error('Error al registrar el usuario. Inténtalo de nuevo.', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        style: {
+          backgroundColor: '#4D171A', 
+          color: '#ffffff', 
+        }
+      });
+    } finally {
+      setIsLoading(false); // Desactiva el spinner de carga
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center">
@@ -168,6 +180,13 @@ export default function Registro() {
 
           </div>
         </form>
+
+        {isLoading && (
+          <div className="flex justify-center mt-4">
+            <Loading type="bubbles" color="#0056B3" />
+          </div>
+        )}
+
         <div className="mt-8 text-center">
           <a href="/login" className="inline-block align-baseline text-sm text-blue-500 transition-colors hover:text-blue-800">
             Iniciar Sesión

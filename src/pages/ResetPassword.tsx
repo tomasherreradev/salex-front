@@ -33,7 +33,6 @@ export default function ResetPassword() {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('contraseña actualizada')
         setFormSubmited(true);
         navigate('/login')
       } else {

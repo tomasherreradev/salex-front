@@ -82,7 +82,7 @@ const CreateAuction: React.FC = () => {
 
     return (
         <div className="max-w-md mx-auto p-6 bg-white rounded-lg">
-            <h1 className="text-2xl font-bold text-center mb-6">Agregar Subasta</h1>
+          <h2 className="text-3xl font-bold mb-6">Agregar <span className="text-[#0056B3]">Subasta</span></h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="auto_id" className="block text-sm font-medium text-gray-700">ID del Auto</label>
