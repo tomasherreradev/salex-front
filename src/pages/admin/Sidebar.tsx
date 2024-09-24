@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
   return (
-    <div style={{ width: 200, backgroundColor: '#f0f0f0', height: '100vh' }}>
+    <div style={{ width: 200, backgroundColor: '#f0f0f0', maxHeight: '1175px', height: '120%' }}>
       <List>
         <ListItem component={Link} to="/admin">
           <ListItemText primary="Panel de Administración" />
@@ -22,5 +22,7 @@ const Sidebar: React.FC = () => {
     </div>
   );
 };
+
+
 
 export default Sidebar;

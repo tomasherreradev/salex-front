@@ -29,6 +29,7 @@ import EditAuction from './pages/admin/Auctions/EditAuction';
 
 import Users from './pages/admin/Users/Users';
 import CreateUser from './pages/admin/Users/CreateUser';
+import EditUser from './pages/admin/Users/EditUser';
 
 
 // protected routes
@@ -62,11 +63,12 @@ const App: React.FC = () => {
 
             <Route path="/admin/auctions" element={<ProtectedRoute><AuctionsAdm /></ProtectedRoute>} />
             <Route path="/admin/auctions/create" element={<ProtectedRoute><CreateAuction /></ProtectedRoute>} />
-            <Route path="/admin/auction/edit/:id" element={<ProtectedRoute><EditAuction /></ProtectedRoute>} />
+            <Route path="/admin/auctions/edit/:id" element={<ProtectedRoute><EditAuction /></ProtectedRoute>} />
 
 
             <Route path="/admin/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
             <Route path="/admin/users/create" element={<ProtectedRoute><CreateUser /></ProtectedRoute>} />
+            <Route path="/admin/users/edit/:id" element={<ProtectedRoute><EditUser /></ProtectedRoute>} />
 
           </Route>
         </Routes>

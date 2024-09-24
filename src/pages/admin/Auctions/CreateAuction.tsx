@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import useCustomNavigate from '../../../hooks/useCustomNavigate';
 
 const CreateAuction: React.FC = () => {
     const token = localStorage.getItem('token')
+    const {goTo} = useCustomNavigate();
 
     const [formData, setFormData] = useState({
         auto_id: '',
@@ -50,17 +52,8 @@ const CreateAuction: React.FC = () => {
               });
 
             if(response.ok) {
-                toast.success('Subasta agregada con éxito!');
-                setFormData({
-                    auto_id: '',
-                    precio_inicial: '',
-                    puja_minima: '',
-                    ganador_id: '',
-                    activo: true,
-                    fecha_inicio: '',
-                    fecha_fin: '',
-                    precio_final: ''
-                });
+                toast.success('Subasta agregada con éxito!');;
+                goTo('/admin/auctions');
             } else {
                 const data = await response.json();
                 toast.error(`Error: ${data.message}`, {

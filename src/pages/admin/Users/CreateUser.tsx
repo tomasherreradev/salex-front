@@ -8,7 +8,7 @@ const CreateUser: React.FC = () => {
   const [password, setPassword] = useState('');
   const [telefono, setTelefono] = useState('');
   const [documento, setDocumento] = useState('');
-  const [foto, setFoto] = useState<File | null>(null); // Cambiado a tipo File
+  const [foto, setFoto] = useState<File | null>(null); 
   const [categoria, setCategoria] = useState<'usuario' | 'suscriptor' | 'administrador'>('usuario');
   const [suscripcionActiva, setSuscripcionActiva] = useState(false);
   const [confirmada, setConfirmada] = useState(false);
@@ -22,7 +22,7 @@ const CreateUser: React.FC = () => {
       return;
     }
 
-    // Crear FormData para enviar tanto el archivo como los demás campos
+    
     const formData = new FormData();
     formData.append('nombre', nombre);
     formData.append('email', email);
@@ -30,7 +30,7 @@ const CreateUser: React.FC = () => {
     formData.append('telefono', telefono);
     formData.append('documento', documento);
     if (foto) {
-      formData.append('profileImage', foto); // Solo añadir la foto si está presente
+      formData.append('profileImage', foto); 
     }
     formData.append('categoria', categoria);
     formData.append('suscripcion_activa', String(suscripcionActiva));
@@ -41,14 +41,14 @@ const CreateUser: React.FC = () => {
       const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/users/create-new`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Si es necesario el token
+          'Authorization': `Bearer ${localStorage.getItem('token')}`, 
         },
-        body: formData, // Usamos FormData en el body
+        body: formData, 
       });
 
       if (response.ok) {
         toast.success('Usuario creado exitosamente');
-        navigate('/admin/users'); // Redirige a la lista de usuarios
+        navigate('/admin/users'); 
       } else {
         const data = await response.json();
         toast.error(`Error: ${data.error}`);
@@ -116,7 +116,7 @@ const CreateUser: React.FC = () => {
           <input
             type="file"
             className="w-full p-2 border rounded"
-            onChange={(e) => setFoto(e.target.files ? e.target.files[0] : null)} // Guardamos el archivo de la foto
+            onChange={(e) => setFoto(e.target.files ? e.target.files[0] : null)} 
           />
         </div>
         <div>

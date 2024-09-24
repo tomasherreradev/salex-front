@@ -47,7 +47,7 @@ const Profile: React.FC = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/users/update-user', {
+            const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/users/update-user`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -138,7 +138,7 @@ const Profile: React.FC = () => {
 
                         <div className="mb-6">
                             <label className="block text-gray-700 font-semibold mb-2" htmlFor="old-password">
-                                Contraseña anterior <span className='text-red-600'>*</span>
+                                Contraseña actual <span className='text-red-600'>*</span>
                             </label>
                             <input
                                 id="old-password"

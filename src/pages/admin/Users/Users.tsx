@@ -1,95 +1,34 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Table from '../../../components/Table';
 import { Link } from 'react-router-dom';
 import usePagination from '../../../hooks/usePagination';
-import {toast} from 'react-toastify';
-import { confirmAlert } from 'react-confirm-alert';
+import useFetchData from '../../../hooks/useFetch';
+import useDeleteItem from '../../../hooks/useDeleteItems';
+import useCustomNavigate from '../../../hooks/useCustomNavigate';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-interface User {
-  id: number,
-  nombre: string, 
-  email: string,
-  categoria: string,
-  suscripcion_activa: boolean
-}
-
 const Users: React.FC = () => {
-  const [userData, setUserData] = useState<User[]>([{
-     id: 0, 
-     nombre: '',
-     email: '',
-     categoria: '',
-     suscripcion_activa: false
-  }])
-  
+  const token = localStorage.getItem('token');
+  const { data: userData, loading, refetch } = useFetchData(`${import.meta.env.VITE_SALEX_BACK_API_URL}/users/get-all`);
+  const { currentItems, paginate, currentPage, totalPages } = usePagination(userData, 10);
+  const { handleDelete } = useDeleteItem(token, refetch);
+  const { goTo } = useCustomNavigate();
+
   const headers = ['id', 'nombre', 'email', 'categoria', 'suscripcion_activa'];
-  const {currentItems, paginate, currentPage, totalPages} = usePagination(userData, 10);
-
-  const token = localStorage.getItem('token')
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    try {
-    const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/users/get-all`);
-    if(!response.ok) {
-      toast.error('Se produjo un error al obtener los datos');
-      return;
-    } 
-    const data = await response.json();
-    setUserData(data)
-    
-    } catch (error) {
-      toast.error(`${error}`);
-    }
-  }
-
 
   const handleEdit = (id: number) => {
-    console.log('Editar usuario con ID:', id);
+    goTo(`/admin/users/edit/${id}`);
   };
 
-  const handleDelete = async (id: number) => {
-    // Mostrar el cuadro de confirmación
-    confirmAlert({
-      title: 'Confirmar eliminación',
-      message: '¿Estás seguro de que deseas eliminar este usuario?',
-      buttons: [
-        {
-          label: 'Sí',
-          onClick: async () => {
-            try {
-              const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/users/delete/${id}`, {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
-                },
-              });
-    
-              if (response.ok) {
-                toast.success('Usuario eliminado correctamente');
-                fetchUsers();
-              } else {
-                toast.error('Error al eliminar el usuario');
-              }
-            } catch (error) {
-              toast.error(`Se produjo un error: ${error}`);
-            }
-          }
-        },
-        {
-          label: 'No',
-          onClick: () => {
-            toast.info('Eliminación cancelada');
-          }
-        }
-      ]
-    });
+  // Función para manejar la eliminación de un usuario
+  const confirmDelete = (id: number, itemName: string) => {
+    const deleteUrl = `${import.meta.env.VITE_SALEX_BACK_API_URL}/users/delete/${id}`; // Cambia la URL según tu API
+    handleDelete(id, deleteUrl, itemName = 'Usuario');
   };
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <div>
@@ -100,7 +39,12 @@ const Users: React.FC = () => {
         </div>
       </div>
 
-      <Table data={currentItems} headers={headers} onEdit={handleEdit} onDelete={handleDelete} />
+      <Table 
+        data={currentItems} 
+        headers={headers} 
+        onEdit={handleEdit} 
+        onDelete={confirmDelete} // Pasar la función de confirmación de eliminación
+      />
 
       <div className="flex justify-center mt-4">
         {Array.from({ length: totalPages }, (_, index) => (

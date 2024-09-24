@@ -4,7 +4,7 @@ interface TableProps {
   data: Array<{ [key: string]: any }>;
   headers: string[];
   onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number, itemName: string) => void; // Ajuste aquí para incluir el nombre del elemento
 }
 
 const Table: React.FC<TableProps> = ({ data, headers, onEdit, onDelete }) => {
@@ -36,7 +36,7 @@ const Table: React.FC<TableProps> = ({ data, headers, onEdit, onDelete }) => {
                 Editar
               </button>
               <button
-                onClick={() => onDelete(row.id)}
+                onClick={() => onDelete(row.id, row.nombre)} // Pasa el nombre del elemento a onDelete
                 className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
               >
                 Eliminar

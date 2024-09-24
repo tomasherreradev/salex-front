@@ -7,7 +7,7 @@ export default function OlvidePass() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/users/forgot-password', {
+      const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/users/forgot-password`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({email})

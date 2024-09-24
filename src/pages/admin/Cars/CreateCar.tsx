@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import useCustomNavigate from '../../../hooks/useCustomNavigate';
+
 
 interface FormData {
     marca: string;
@@ -9,6 +11,8 @@ interface FormData {
     kilometraje: string;
     foto: File | null; // Asegúrate de que el tipo sea File | null
     notas: string;
+    placa: string;
+    color: string;
 }
 
 const CreateCar: React.FC = () => {
@@ -19,9 +23,14 @@ const CreateCar: React.FC = () => {
         estado_actual: 'nuevo',
         kilometraje: '',
         foto: null,
-        notas: ''
+        notas: '',
+        placa: '',
+        color: ''
     });
     const token = localStorage.getItem('token');
+    const {goTo} = useCustomNavigate();
+
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -32,10 +41,10 @@ const CreateCar: React.FC = () => {
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null; // Esto permite que file sea de tipo File o null
+        const file = e.target.files?.[0] || null;
         setFormData(prevState => ({
             ...prevState,
-            foto: file // Aquí se asigna file directamente
+            foto: file
         }));
     };
 
@@ -53,13 +62,15 @@ const CreateCar: React.FC = () => {
             data.append('foto', formData.foto);
         }
         data.append('notas', formData.notas);
+        data.append('placa', formData.placa); // Añadir placa
+        data.append('color', formData.color); // Añadir color
 
         try {
             const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/create-new`, {
                 method: 'POST',
                 body: data,
                 headers: {
-                    'Authorization': `Bearer ${token}` // No agregar 'Content-Type'
+                    'Authorization': `Bearer ${token}`
                 },
             });
 
@@ -69,15 +80,8 @@ const CreateCar: React.FC = () => {
             }
 
             toast.success('Vehículo agregado con éxito!');
-            setFormData({
-                marca: '',
-                modelo: '',
-                year: '',
-                estado_actual: 'nuevo',
-                kilometraje: '',
-                foto: null,
-                notas: ''
-            });
+            goTo('/admin/cars');
+
         } catch (error) {
             toast.error(`${error}`);
         }
@@ -140,6 +144,27 @@ const CreateCar: React.FC = () => {
                         value={formData.kilometraje} 
                         onChange={handleChange} 
                         required 
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="placa" className="block text-sm font-medium text-gray-700">Placa</label>
+                    <input 
+                        type="text" 
+                        name="placa" 
+                        value={formData.placa} 
+                        onChange={handleChange} 
+                        required 
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="color" className="block text-sm font-medium text-gray-700">Color</label>
+                    <input 
+                        type="text" 
+                        name="color" 
+                        value={formData.color} 
+                        onChange={handleChange} 
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
                     />
                 </div>

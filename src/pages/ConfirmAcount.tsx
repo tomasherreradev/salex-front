@@ -11,7 +11,7 @@ const ConfirmAcount: React.FC = () => {
       const token = params.get("token");
 
       if (token) {
-        const response = await fetch(`http://localhost:5000/users/confirm-account?token=${token}`);
+        const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/users/confirm-account?token=${token}`);
         const data = await response.json();
 
         if (response.ok) {

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import useCustomNavigate from '../../../hooks/useCustomNavigate';
+
 
 const EditAuction: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,7 +16,7 @@ const EditAuction: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
 
-  const navigate = useNavigate();
+  const {goTo} = useCustomNavigate();
 
   useEffect(() => {
     const fetchAuction = async () => {
@@ -53,7 +55,7 @@ const EditAuction: React.FC = () => {
 
     if (response.ok) {
       toast.success('Subasta actualizada con éxito');
-      navigate('/admin/auctions'); // Redirigir a la lista de subastas
+      goTo('/admin/auctions'); 
     } else {
       const data = await response.json();
       toast.error(`Error: ${data.message || 'Error desconocido'}`);

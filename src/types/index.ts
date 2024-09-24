@@ -14,3 +14,13 @@ export type Car = {
     foto: string;
     notas: string;
 };
+
+
+export interface User {
+    id: number,
+    nombre: string, 
+    email: string,
+    categoria: string,
+    suscripcion_activa: boolean
+  }
+  
