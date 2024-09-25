@@ -17,6 +17,7 @@ const Table: React.FC<TableProps> = ({ data, headers, onEdit, onDelete }) => {
               {header}
             </th>
           ))}
+          <th className="border border-gray-300 px-4 py-2 text-left">Foto</th>
           <th className="border border-gray-300 px-4 py-2 text-left">Acciones</th>
         </tr>
       </thead>
@@ -28,6 +29,15 @@ const Table: React.FC<TableProps> = ({ data, headers, onEdit, onDelete }) => {
                 {row[header]}
               </td>
             ))}
+
+            <td className="border border-gray-300 px-4 py-2">
+              {row.fotoUrl ? ( 
+                <img src={row.fotoUrl} alt="Foto de la subasta" className="w-20 h-20 object-cover" />
+              ) : (
+                'Sin foto'
+              )}
+            </td>
+
             <td className="border border-gray-300 px-4 py-2">
               <button
                 onClick={() => onEdit(row.id)}

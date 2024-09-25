@@ -14,7 +14,8 @@ const Cars: React.FC = () => {
   const { currentItems, paginate, currentPage, totalPages } = usePagination(carsData, 10);
   const { handleDelete } = useDeleteItem(token, refetch);
 
-  const headers = ['id', 'marca', 'modelo', 'year', 'estado_actual', 'kilometraje', 'notas', 'placa', 'color', 'foto'];
+
+  const headers = ['id', 'marca', 'modelo', 'year', 'estado_actual', 'kilometraje', 'notas', 'placa', 'color'];
 
   const handleEdit = (id: number) => {
     goTo(`/admin/cars/edit/${id}`);
@@ -22,7 +23,7 @@ const Cars: React.FC = () => {
 
 
   const confirmDelete = (id: number, itemName: string) => {
-    const deleteUrl = `${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/delete/${id}`; // Cambia la URL según tu API
+    const deleteUrl = `${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/delete/${id}`; 
     handleDelete(id, deleteUrl, itemName = 'Vehiculo');
   };
 
@@ -31,6 +32,16 @@ const Cars: React.FC = () => {
   if (loading) {
     return <div>Cargando...</div>;
   }
+
+
+  const mappedItems = currentItems.map(item => ({
+    ...item,
+    id: item.id,
+    fotoUrl: item.foto ? `${import.meta.env.VITE_SALEX_BACK_API_URL}${item.foto}` : null
+  }));
+
+
+
 
   return (
     <div>
@@ -42,7 +53,7 @@ const Cars: React.FC = () => {
       </div>
 
       <Table 
-        data={currentItems} 
+        data={mappedItems} 
         headers={headers} 
         onEdit={handleEdit} 
         onDelete={confirmDelete}

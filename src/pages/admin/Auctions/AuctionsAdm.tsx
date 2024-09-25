@@ -1,44 +1,41 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Table from '../../../components/Table';
+import { Link } from 'react-router-dom';
 import usePagination from '../../../hooks/usePagination';
 import useFetchData from '../../../hooks/useFetch';
 import useDeleteItem from '../../../hooks/useDeleteItems';
 import Pagination from '../../../utilities/Pagination';
 import useCustomNavigate from '../../../hooks/useCustomNavigate';
 
-const AuctionsAdm: React.FC = () => {
-  const { goTo } = useCustomNavigate();
+const Auctions: React.FC = () => {
   const token = localStorage.getItem('token');
+  const { goTo } = useCustomNavigate();
   const { data: auctionsData, loading, refetch } = useFetchData(`${import.meta.env.VITE_SALEX_BACK_API_URL}/auctions/get-all`);
   const { currentItems, paginate, currentPage, totalPages } = usePagination(auctionsData, 10);
   const { handleDelete } = useDeleteItem(token, refetch);
 
-  const headers = [
-    'id',
-    'activo',
-    'auto_id',
-    'fecha_inicio',
-    'fecha_fin',
-    'ganador_id',
-    'precio_inicial',
-    'precio_final',
-    'puja_minima'
-  ];
+  const headers = ['subasta_id', 'marca', 'modelo', 'year', 'estado_actual', 'kilometraje', 'precio_inicial', 'puja_minima', 'fecha_inicio', 'fecha_fin'];
 
-  const handleEdit = (id: number) => {
-    goTo(`/admin/auctions/edit/${id}`);
+  const handleEdit = (subasta_id: number) => {
+    console.log(`yendo a /admin/auctions/edit/${subasta_id}`);
+    goTo(`/admin/auctions/edit/${subasta_id}`); // Navega a la ruta de edición
   };
 
+  const confirmDelete = (subasta_id: number, itemName: string) => {
+    const deleteUrl = `${import.meta.env.VITE_SALEX_BACK_API_URL}/auctions/delete/${subasta_id}`;
+    handleDelete(subasta_id, deleteUrl, itemName = 'Subasta');
+  };
 
   if (loading) {
     return <div>Cargando...</div>;
   }
 
-  const confirmDelete = (id: number, itemName: string) => {
-    const deleteUrl = `${import.meta.env.VITE_SALEX_BACK_API_URL}/auctions/delete/${id}`; // Cambia la URL según tu API
-    handleDelete(id, deleteUrl, itemName = 'Registro');
-  };
+  // Mapea los datos para incluir la URL de la imagen
+  const mappedItems = currentItems.map(item => ({
+    ...item,
+    id: item.subasta_id,
+    fotoUrl: item.foto ? `${import.meta.env.VITE_SALEX_BACK_API_URL}${item.foto}` : null
+  }));
 
   return (
     <div>
@@ -49,18 +46,16 @@ const AuctionsAdm: React.FC = () => {
         </div>
       </div>
 
-
       <Table 
-          data={currentItems} 
-          headers={headers} 
-          onEdit={handleEdit} 
-          onDelete={confirmDelete} 
-      
+        data={mappedItems}
+        headers={headers} 
+        onEdit={handleEdit} 
+        onDelete={confirmDelete}
       />
 
-    <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+      <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
     </div>
   );
 };
 
-export default AuctionsAdm;
+export default Auctions;

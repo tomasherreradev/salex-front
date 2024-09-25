@@ -21,9 +21,12 @@ const EditAuction: React.FC = () => {
   useEffect(() => {
     const fetchAuction = async () => {
       const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/auctions/get/${id}`);
+      console.log(response)
+
       if (response.ok) {
         const data = await response.json();
-        // fechas para datetime-local
+
+
         const formattedData = {
           ...data,
           fecha_inicio: new Date(data.fecha_inicio).toISOString().slice(0, 16),

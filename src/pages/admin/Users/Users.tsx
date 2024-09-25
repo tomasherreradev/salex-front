@@ -30,6 +30,15 @@ const Users: React.FC = () => {
     return <div>Cargando...</div>;
   }
 
+
+  const mappedItems = currentItems.map(item => ({
+    ...item,
+    id: item.id,
+    fotoUrl: item.foto ? `${import.meta.env.VITE_SALEX_BACK_API_URL}${item.foto}` : null
+  }));
+
+
+
   return (
     <div>
       <div className="flex justify-between mb-4">
@@ -40,7 +49,7 @@ const Users: React.FC = () => {
       </div>
 
       <Table 
-        data={currentItems} 
+        data={mappedItems} 
         headers={headers} 
         onEdit={handleEdit} 
         onDelete={confirmDelete} // Pasar la función de confirmación de eliminación
