@@ -23,7 +23,10 @@ const Table: React.FC<TableProps> = ({ data, headers, onEdit, onDelete }) => {
       </thead>
       <tbody>
         {data.map((row, index) => (
-          <tr key={index} className="border-b border-gray-300">
+          <tr 
+            key={index} 
+            className={`border-b border-gray-300 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
+          >
             {headers.map((header) => (
               <td key={header} className="border border-gray-300 px-4 py-2">
                 {row[header]}

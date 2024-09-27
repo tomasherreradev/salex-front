@@ -1,6 +1,7 @@
 import React from 'react';
 import Table from '../../../components/Table';
 import { Link } from 'react-router-dom';
+import SearchBar from '../../../components/SearchBar';
 import usePagination from '../../../hooks/usePagination';
 import useFetchData from '../../../hooks/useFetch';
 import useDeleteItem from '../../../hooks/useDeleteItems';
@@ -50,6 +51,10 @@ const Cars: React.FC = () => {
         <div className="bg-green-800 text-white p-2 rounded-xl hover:bg-green-950 transition-colors">
           <Link to="/admin/cars/create">Agregar Vehículo</Link>
         </div>
+      </div>
+
+      <div>
+        <SearchBar apiEndpoint={`${import.meta.env.VITE_SALEX_BACK_API_URL}/admin/get-by-tuition`} redirectTo='/admin/cars/edit/' searchBy='Buscar Por Matricula' span='modelo'/>
       </div>
 
       <Table 

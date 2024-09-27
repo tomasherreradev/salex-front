@@ -9,7 +9,7 @@ interface FormData {
     year: string;
     estado_actual: string;
     kilometraje: string;
-    foto: File | null; // Asegúrate de que el tipo sea File | null
+    fotos: File[];
     notas: string;
     placa: string;
     color: string;
@@ -20,9 +20,9 @@ const CreateCar: React.FC = () => {
         marca: '',
         modelo: '',
         year: '',
-        estado_actual: 'nuevo',
+        estado_actual: 'Óptimas Condiciones',
         kilometraje: '',
-        foto: null,
+        fotos: [],
         notas: '',
         placa: '',
         color: ''
@@ -41,11 +41,13 @@ const CreateCar: React.FC = () => {
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setFormData(prevState => ({
-            ...prevState,
-            foto: file
-        }));
+        const files = e.target.files;
+        if (files) {
+            setFormData(prevState => ({
+                ...prevState,
+                fotos: Array.from(files) // Convertimos la FileList en un array
+            }));
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -58,12 +60,15 @@ const CreateCar: React.FC = () => {
         data.append('year', formData.year);
         data.append('estado_actual', formData.estado_actual);
         data.append('kilometraje', formData.kilometraje);
-        if (formData.foto) {
-            data.append('foto', formData.foto);
-        }
+        formData.fotos.forEach((foto) => {
+            data.append(`fotos`, foto);
+        });
         data.append('notas', formData.notas);
-        data.append('placa', formData.placa); // Añadir placa
-        data.append('color', formData.color); // Añadir color
+        data.append('placa', formData.placa); 
+        data.append('color', formData.color); 
+
+        console.log('Datos a enviar:', Array.from(data.entries()));
+
 
         try {
             const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/create-new`, {
@@ -76,7 +81,7 @@ const CreateCar: React.FC = () => {
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(`Error: ${data.message}`);
+                throw new Error(`${data.error}`);
             }
 
             toast.success('Vehículo agregado con éxito!');
@@ -132,8 +137,10 @@ const CreateCar: React.FC = () => {
                         required 
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="nuevo">Nuevo</option>
-                        <option value="usado">Usado</option>
+                        <option value="Óptimas Condiciones">Óptimas Condiciones</option>
+                        <option value="Corre y Camina">Corre y Camina</option>
+                        <option value="Reparación">Reparación</option>
+                        <option value="Salvamento">Salvamento</option>
                     </select>
                 </div>
                 <div className="mb-4">
@@ -172,12 +179,14 @@ const CreateCar: React.FC = () => {
                     <label htmlFor="foto" className="block text-sm font-medium text-gray-700">Foto</label>
                     <input 
                         type="file" 
-                        name="foto" 
+                        name="fotos" 
                         accept="image/*" 
+                        multiple 
                         onChange={handleFileChange} 
                         required 
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
                     />
+
                 </div>
                 <div className="mb-4">
                     <label htmlFor="notas" className="block text-sm font-medium text-gray-700">Notas</label>

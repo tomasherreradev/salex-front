@@ -10,7 +10,8 @@ export type Car = {
     foto: string,
     year: number,
     marca: string,
-    modelo: string
+    modelo: string,
+    placa: string
 };
 
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import Table from '../../../components/Table';
 import { Link } from 'react-router-dom';
+import SearchBar from '../../../components/SearchBar';
 import usePagination from '../../../hooks/usePagination';
 import useFetchData from '../../../hooks/useFetch';
 import useDeleteItem from '../../../hooks/useDeleteItems';
@@ -41,11 +42,15 @@ const Users: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between mb-4">
-        <h2 className="text-3xl font-bold">Gestión de <span className="text-[#0056B3]">Usuarios</span></h2>
-        <div className="bg-green-800 text-white p-2 rounded-xl hover:bg-green-950 transition-colors">
-          <Link to="/admin/users/create">Agregar Usuario</Link>
-        </div>
+      <div className="flex justify-between my-10">
+          <h2 className="text-3xl font-bold">Gestión de <span className="text-[#0056B3]">Usuarios</span></h2>
+          <div className="bg-green-800 text-white p-2 rounded-xl hover:bg-green-950 transition-colors">
+            <Link to="/admin/users/create">Agregar Usuario</Link>
+          </div>
+      </div>
+
+      <div>
+        <SearchBar apiEndpoint={`${import.meta.env.VITE_SALEX_BACK_API_URL}/admin/get-by-email`} redirectTo='/admin/users/edit/' searchBy='Buscar Por Email' span='nombre'/>
       </div>
 
       <Table 

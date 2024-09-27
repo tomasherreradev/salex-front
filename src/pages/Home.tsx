@@ -49,7 +49,7 @@ const Home = () => {
         <HeroSection/>
         <IncomingAuctionsAd/>
         <SuccessStories cars={cars.slice(0, 3)}/>
-        <IncomingAuctions cars={cars.slice(0, 3)}/>
+        <IncomingAuctions/>
         <AuctionProcess/>
         <CompleteFooter/>
       </>

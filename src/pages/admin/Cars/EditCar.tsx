@@ -9,11 +9,11 @@ interface FormData {
     year: string;
     estado_actual: string;
     kilometraje: string;
-    foto: File | null; // Representa un archivo nuevo si se selecciona uno
+    fotos: File[]; // Cambiado a un array para manejar múltiples archivos
     placa: string;
     color: string;
     notas: string;
-    existingFotoUrl: string | null; // URL de la foto existente
+    existingFotoUrls: string[];
 }
 
 const EditCar: React.FC = () => {
@@ -22,10 +22,10 @@ const EditCar: React.FC = () => {
         marca: '',
         modelo: '',
         year: '',
-        estado_actual: 'nuevo',
+        estado_actual: 'Óptimas Condiciones',
         kilometraje: '',
-        foto: null, // Comienza sin archivo
-        existingFotoUrl: null, // URL de la imagen existente
+        fotos: [], // Comienza con un array vacío
+        existingFotoUrls: [],
         placa: '',
         color: '',
         notas: '',
@@ -33,7 +33,7 @@ const EditCar: React.FC = () => {
 
     const [loading, setLoading] = useState(true);
     const token = localStorage.getItem('token');
-    const {goTo} = useCustomNavigate();
+    const { goTo } = useCustomNavigate();
 
     useEffect(() => {
         const fetchCarData = async () => {
@@ -42,8 +42,8 @@ const EditCar: React.FC = () => {
                 const data = await response.json();
                 setCarData({
                     ...data,
-                    existingFotoUrl: data.foto ? `${import.meta.env.VITE_SALEX_BACK_API_URL}${data.foto}` : null,
-                    foto: null, // Foto debe ser null al cargar los datos
+                    existingFotoUrls: data.fotos.map((foto: string) => `${import.meta.env.VITE_SALEX_BACK_API_URL}${foto}`),
+                    fotos: [], // Mantiene vacío al cargar los datos
                 });
             } else {
                 toast.error('Error al obtener los datos del vehículo');
@@ -58,11 +58,14 @@ const EditCar: React.FC = () => {
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setCarData(prevState => ({
-            ...prevState,
-            foto: file, // Establece la nueva foto si se selecciona
-        }));
+        const files = e.target.files;
+        if (files) {
+            const fileArray = Array.from(files); // Convierte a array
+            setCarData(prevState => ({
+                ...prevState,
+                fotos: fileArray, // Establece los archivos seleccionados
+            }));
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -75,13 +78,13 @@ const EditCar: React.FC = () => {
         formData.append('estado_actual', carData.estado_actual);
         formData.append('kilometraje', carData.kilometraje);
         formData.append('notas', carData.notas);
-        formData.append('placa', carData.placa);  
+        formData.append('placa', carData.placa);
         formData.append('color', carData.color);
 
-        // Solo agrega la nueva foto si se ha seleccionado una
-        if (carData.foto) {
-            formData.append('foto', carData.foto);
-        }
+        // Agrega todas las nuevas fotos si se han seleccionado
+        carData.fotos.forEach((foto) => {
+            formData.append('fotos', foto);
+        });
 
         const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/update/${id}`, {
             method: 'PUT',
@@ -144,8 +147,6 @@ const EditCar: React.FC = () => {
                     />
                 </div>
 
-
-
                 <div className="mb-4">
                     <label htmlFor="notas" className="block text-sm font-medium text-gray-700">Notas</label>
                     <input
@@ -157,26 +158,29 @@ const EditCar: React.FC = () => {
                     />
                 </div>
 
-
                 <div className="mb-4">
-                    <label htmlFor="foto" className="block text-sm font-medium text-gray-700">Foto</label>
+                    <label htmlFor="fotos" className="block text-sm font-medium text-gray-700">Fotos (Nuevas)</label>
                     <input
                         type="file"
-                        name="foto"
+                        name="fotos"
                         accept="image/*"
                         onChange={handleFileChange}
+                        multiple // Permite seleccionar múltiples archivos
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
 
-                {/* Mostrar la imagen existente si no se ha seleccionado una nueva */}
-                {carData.existingFotoUrl && !carData.foto && (
+                {/* Mostrar las imágenes existentes si hay alguna */}
+                {carData.existingFotoUrls.length > 0 && (
                     <div className="mb-4">
-                        <img src={carData.existingFotoUrl} alt="Foto del vehículo" className="h-32 w-32 object-cover" />
+                        <h3 className="text-lg font-medium">Fotos Existentes:</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {carData.existingFotoUrls.map((url, index) => (
+                                <img key={index} src={url} alt={`Foto del vehículo ${index + 1}`} className="h-32 w-32 object-cover" />
+                            ))}
+                        </div>
                     </div>
                 )}
-
-
 
                 <div className="mb-4">
                     <label htmlFor="kilometraje" className="block text-sm font-medium text-gray-700">Kilometraje</label>
@@ -214,28 +218,23 @@ const EditCar: React.FC = () => {
                     />
                 </div>
 
-
                 <div className="mb-4">
-                    <label htmlFor="estado_actual" className="block text-sm font-medium text-gray-700">Estado</label>
-                    <select
-                        name="estado_actual"
-                        value={carData.estado_actual}
-                        onChange={handleChange}
-                        required
+                    <label htmlFor="estado_actual" className="block text-sm font-medium text-gray-700">Estado Actual</label>
+                    <select 
+                        name="estado_actual" 
+                        value={carData.estado_actual} 
+                        onChange={handleChange} 
+                        required 
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="nuevo">Nuevo</option>
-                        <option value="usado">Usado</option>
+                        <option value="Óptimas Condiciones">Óptimas Condiciones</option>
+                        <option value="Corre y Camina">Corre y Camina</option>
+                        <option value="Reparación">Reparación</option>
+                        <option value="Salvamento">Salvamento</option>
                     </select>
                 </div>
 
-
-                <button
-                    type="submit"
-                    className="w-full py-2 mt-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-                >
-                    Actualizar Vehiculo
-                </button>
+                <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Actualizar Vehículo</button>
             </form>
         </div>
     );

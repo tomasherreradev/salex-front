@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import useFetchData from '../hooks/useFetch';
 import { useUser } from '../context/AuthContext';
+import { useEffect } from 'react';
 
 
 export default function IncomingAuctions() {
@@ -8,6 +9,9 @@ export default function IncomingAuctions() {
 
 
     const { data: auctions } = useFetchData(`${import.meta.env.VITE_SALEX_BACK_API_URL}/auctions/get-all`)
+    useEffect(()=> {
+        console.log(auctions)
+    })
 
     return (
         <div className='p-4 w-full max-w-[1600px] mx-auto'>
@@ -22,7 +26,7 @@ export default function IncomingAuctions() {
 
 
                     return (
-                        <div key={auction.subasta_id} className="bg-[#0056B3] text-white rounded-3xl overflow-hidden relative">
+                        <div key={auction.id} className="bg-[#0056B3] text-white rounded-3xl overflow-hidden relative">
                             <div className='p-4 flex flex-col'>
                                 <p className="font-semibold uppercase text-center text-lg">Próxima Subasta</p>
                                 <h1 className="text-[#FFC940] font-black uppercase text-center text-4xl">
@@ -35,7 +39,7 @@ export default function IncomingAuctions() {
                             <div className="py-5 flex justify-center">
                                 {user ?
                                     (
-                                        <Link to={`/subasta/${auction.subasta_id}`} className="bg-[#FFC940] p-2 text-black rounded-md mt-6 lg:mt-10 text-lg lg:text-xl">
+                                        <Link to={`/subasta/${auction.id}`} className="bg-[#FFC940] p-2 text-black rounded-md mt-6 lg:mt-10 text-lg lg:text-xl">
                                             Ver Detalles
                                         </Link>)
 

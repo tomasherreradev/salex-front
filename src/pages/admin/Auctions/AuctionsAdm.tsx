@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Table from '../../../components/Table';
 import { Link } from 'react-router-dom';
 import usePagination from '../../../hooks/usePagination';
@@ -14,16 +14,20 @@ const Auctions: React.FC = () => {
   const { currentItems, paginate, currentPage, totalPages } = usePagination(auctionsData, 10);
   const { handleDelete } = useDeleteItem(token, refetch);
 
-  const headers = ['subasta_id', 'marca', 'modelo', 'year', 'estado_actual', 'kilometraje', 'precio_inicial', 'puja_minima', 'fecha_inicio', 'fecha_fin'];
+  useEffect(() => {
+    console.log(auctionsData);
+  }, [auctionsData]);
 
-  const handleEdit = (subasta_id: number) => {
-    console.log(`yendo a /admin/auctions/edit/${subasta_id}`);
-    goTo(`/admin/auctions/edit/${subasta_id}`); // Navega a la ruta de edición
+  const headers = ['id', 'marca', 'modelo', 'year', 'estado_actual', 'kilometraje', 'precio_inicial', 'puja_minima', 'fecha_inicio', 'fecha_fin'];
+
+  const handleEdit = (id: number) => {
+    console.log(`yendo a /admin/auctions/edit/${id}`);
+    goTo(`/admin/auctions/edit/${id}`); // Navega a la ruta de edición
   };
 
-  const confirmDelete = (subasta_id: number, itemName: string) => {
-    const deleteUrl = `${import.meta.env.VITE_SALEX_BACK_API_URL}/auctions/delete/${subasta_id}`;
-    handleDelete(subasta_id, deleteUrl, itemName = 'Subasta');
+  const confirmDelete = (id: number, itemName: string) => {
+    const deleteUrl = `${import.meta.env.VITE_SALEX_BACK_API_URL}/auctions/delete/${id}`;
+    handleDelete(id, deleteUrl, itemName = 'Subasta');
   };
 
   if (loading) {
@@ -33,7 +37,7 @@ const Auctions: React.FC = () => {
   // Mapea los datos para incluir la URL de la imagen
   const mappedItems = currentItems.map(item => ({
     ...item,
-    id: item.subasta_id,
+    id: item.id, // Asegúrate de que esta clave sea la correcta
     fotoUrl: item.foto ? `${import.meta.env.VITE_SALEX_BACK_API_URL}${item.foto}` : null
   }));
 

@@ -91,13 +91,15 @@ const EditUser: React.FC = () => {
         formData.append('confirmada', userData.confirmada ? '1' : '0'); // Lo mismo aquí
     
         try {
-            const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/users/update-user/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/admin/update-user/${id}`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
                 body: formData,
             });
+
+            console.log(response)
     
             if (response.ok) {
                 toast.success('Usuario actualizado con éxito');

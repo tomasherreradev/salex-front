@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useCustomNavigate from '../../../hooks/useCustomNavigate';
+import type { Car } from '../../../types';
 
 
 const EditAuction: React.FC = () => {
@@ -11,22 +12,20 @@ const EditAuction: React.FC = () => {
     precio_inicial: '',
     puja_minima: '',
     fecha_inicio: '',
-    fecha_fin: ''
+    fecha_fin: '',
+    activo: false 
   });
   const [loading, setLoading] = useState(true);
+  const [autos, setAutos] = useState<Car[]>([]); 
   const token = localStorage.getItem('token');
 
-  const {goTo} = useCustomNavigate();
+  const { goTo } = useCustomNavigate();
 
   useEffect(() => {
     const fetchAuction = async () => {
       const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/auctions/get/${id}`);
-      console.log(response)
-
       if (response.ok) {
         const data = await response.json();
-
-
         const formattedData = {
           ...data,
           fecha_inicio: new Date(data.fecha_inicio).toISOString().slice(0, 16),
@@ -38,12 +37,28 @@ const EditAuction: React.FC = () => {
       }
       setLoading(false);
     };
+
+    const fetchAutos = async () => {
+      const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/get-all`);
+      if (response.ok) {
+        const data = await response.json();
+        setAutos(data); // Suponiendo que la respuesta contiene una lista de autos
+      } else {
+        toast.error('Error al obtener los autos');
+      }
+    };
+
     fetchAuction();
+    fetchAutos();
   }, [id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAuctionData({ ...auctionData, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, type, value } = e.target;
+    const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
+  
+    setAuctionData({ ...auctionData, [name]: type === 'checkbox' ? checked : value });
   };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +66,7 @@ const EditAuction: React.FC = () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(auctionData),
     });
@@ -79,14 +94,20 @@ const EditAuction: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="auto_id" className="block text-sm font-medium text-gray-700">ID del Auto</label>
-          <input
-            type="text"
+          <select
             name="auto_id"
             value={auctionData.auto_id}
             onChange={handleChange}
             required
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          >
+            <option value="">Seleccionar Auto</option>
+            {autos.map(auto => (
+              <option key={auto.id} value={auto.id}>
+                {auto.marca} - {auto.modelo} - {auto.placa}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <label htmlFor="precio_inicial" className="block text-sm font-medium text-gray-700">Precio Inicial</label>
@@ -131,6 +152,18 @@ const EditAuction: React.FC = () => {
             required
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="activo" className="inline-flex items-center">
+            <input
+              type="checkbox"
+              name="activo"
+              checked={auctionData.activo}
+              onChange={handleChange}
+              className="mr-2 leading-tight"
+            />
+            <span className="text-sm">Activo</span>
+          </label>
         </div>
         <button
           type="submit"

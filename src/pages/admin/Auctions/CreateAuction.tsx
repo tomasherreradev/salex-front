@@ -1,21 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import useCustomNavigate from '../../../hooks/useCustomNavigate';
+import type { Car } from '../../../types';
 
 const CreateAuction: React.FC = () => {
-    const token = localStorage.getItem('token')
-    const {goTo} = useCustomNavigate();
+    const token = localStorage.getItem('token');
+    const { goTo } = useCustomNavigate();
 
     const [formData, setFormData] = useState({
         auto_id: '',
         precio_inicial: '',
         puja_minima: '',
         ganador_id: '',
-        activo: true, // Valor por defecto
+        activo: true,
         fecha_inicio: '',
         fecha_fin: '',
         precio_final: ''
     });
+
+    const [autos, setAutos] = useState<Car[]>([]); // Estado para almacenar los autos
+
+    useEffect(() => {
+        const fetchAutos = async () => {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/cars/get-all`, {
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setAutos(data); 
+                    console.log(autos)
+                } else {
+                    toast.error('Error al cargar los autos disponibles.');
+                }
+            } catch (error) {
+                toast.error('Error al conectar con la API.');
+            }
+        };
+
+        fetchAutos();
+    }, [token]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -28,7 +52,6 @@ const CreateAuction: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // formData para enviar los datos
         const data = {
             auto_id: formData.auto_id,
             precio_inicial: parseFloat(formData.precio_inicial),
@@ -40,53 +63,50 @@ const CreateAuction: React.FC = () => {
             precio_final: formData.precio_final || null
         };
 
-
         try {
             const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/auctions/create-new`, {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(data)
-              });
+            });
 
-            if(response.ok) {
-                toast.success('Subasta agregada con éxito!');;
+            if (response.ok) {
+                toast.success('Subasta agregada con éxito!');
                 goTo('/admin/auctions');
             } else {
                 const data = await response.json();
-                toast.error(`Error: ${data.message}`, {
-                  position: "top-right",
-                  autoClose: 3000,
-                  hideProgressBar: true,
-                  style: {
-                    backgroundColor: '#4D171A', 
-                    color: '#ffffff', 
-                  }
-                });
+                toast.error(`Error: ${data.message}`);
             }
 
-            
         } catch (error) {
             toast.error('Error al agregar la subasta.');
         }
     };
 
+
     return (
         <div className="max-w-md mx-auto p-6 bg-white rounded-lg">
           <h2 className="text-3xl font-bold mb-6">Agregar <span className="text-[#0056B3]">Subasta</span></h2>
             <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                    <label htmlFor="auto_id" className="block text-sm font-medium text-gray-700">ID del Auto</label>
-                    <input 
-                        type="number" 
+            <div className="mb-4">
+                    <label htmlFor="auto_id" className="block text-sm font-medium text-gray-700">Auto</label>
+                    <select 
                         name="auto_id" 
                         value={formData.auto_id} 
                         onChange={handleChange} 
                         required 
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                    />
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="" disabled>Selecciona un auto</option>
+                        {autos.map(auto => (
+                            <option key={auto.id} value={auto.id}>
+                                {`${auto.marca} ${auto.modelo} - ${auto.placa}`}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="mb-4">
                     <label htmlFor="precio_inicial" className="block text-sm font-medium text-gray-700">Precio Inicial</label>
