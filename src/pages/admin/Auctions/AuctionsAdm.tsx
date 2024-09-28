@@ -22,7 +22,7 @@ const Auctions: React.FC = () => {
 
   const handleEdit = (id: number) => {
     console.log(`yendo a /admin/auctions/edit/${id}`);
-    goTo(`/admin/auctions/edit/${id}`); // Navega a la ruta de edición
+    goTo(`/admin/auctions/edit/${id}`); 
   };
 
   const confirmDelete = (id: number, itemName: string) => {
@@ -37,8 +37,8 @@ const Auctions: React.FC = () => {
   // Mapea los datos para incluir la URL de la imagen
   const mappedItems = currentItems.map(item => ({
     ...item,
-    id: item.id, // Asegúrate de que esta clave sea la correcta
-    fotoUrl: item.foto ? `${import.meta.env.VITE_SALEX_BACK_API_URL}${item.foto}` : null
+    id: item.id, 
+    fotoUrl: item.foto_auto ? `${import.meta.env.VITE_SALEX_BACK_API_URL}${item.foto_auto}` : null
   }));
 
   return (

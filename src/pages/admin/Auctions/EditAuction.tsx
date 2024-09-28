@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useCustomNavigate from '../../../hooks/useCustomNavigate';
 import type { Car } from '../../../types';
-
+import type { User } from '../../../types';
 
 const EditAuction: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,10 +13,12 @@ const EditAuction: React.FC = () => {
     puja_minima: '',
     fecha_inicio: '',
     fecha_fin: '',
-    activo: false 
+    activo: false,
+    ganador_id: '' 
   });
   const [loading, setLoading] = useState(true);
-  const [autos, setAutos] = useState<Car[]>([]); 
+  const [autos, setAutos] = useState<Car[]>([]);
+  const [ganador, setGanador] = useState<User[]>([]); 
   const token = localStorage.getItem('token');
 
   const { goTo } = useCustomNavigate();
@@ -48,17 +50,26 @@ const EditAuction: React.FC = () => {
       }
     };
 
+    const fetchGanadores = async () => {
+      const response = await fetch(`${import.meta.env.VITE_SALEX_BACK_API_URL}/users/get-all`);
+      if (response.ok) {
+        const data = await response.json();
+        setGanador(data); 
+      } else {
+        toast.error('Error al obtener los usuarios');
+      }
+    };
+
     fetchAuction();
     fetchAutos();
+    fetchGanadores(); // Llamamos a la función para obtener los usuarios
   }, [id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, type, value } = e.target;
     const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
-  
-    setAuctionData({ ...auctionData, [name]: type === 'checkbox' ? checked : value });
+    setAuctionData({ ...auctionData, [name]: type === 'checkbox' ? (checked ? 1 : 0) : value });
   };
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +84,7 @@ const EditAuction: React.FC = () => {
 
     if (response.ok) {
       toast.success('Subasta actualizada con éxito');
-      goTo('/admin/auctions'); 
+      goTo('/admin/auctions');
     } else {
       const data = await response.json();
       toast.error(`Error: ${data.message || 'Error desconocido'}`);
@@ -109,6 +120,25 @@ const EditAuction: React.FC = () => {
             ))}
           </select>
         </div>
+        
+        <div className="mb-4">
+          <label htmlFor="ganador_id" className="block text-sm font-medium text-gray-700">Seleccionar Ganador</label>
+          <select
+            name="ganador_id"
+            value={auctionData.ganador_id}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Seleccionar Ganador</option>
+            {ganador.map(ganador => (
+              <option key={ganador.id} value={ganador.id}>
+                {ganador.nombre} - {ganador.email}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Otros campos del formulario */}
         <div className="mb-4">
           <label htmlFor="precio_inicial" className="block text-sm font-medium text-gray-700">Precio Inicial</label>
           <input
@@ -153,6 +183,8 @@ const EditAuction: React.FC = () => {
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+        
+        {/* Activo Checkbox */}
         <div className="mb-4">
           <label htmlFor="activo" className="inline-flex items-center">
             <input
@@ -165,6 +197,7 @@ const EditAuction: React.FC = () => {
             <span className="text-sm">Activo</span>
           </label>
         </div>
+        
         <button
           type="submit"
           className="w-full py-2 mt-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"

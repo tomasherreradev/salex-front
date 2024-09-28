@@ -35,11 +35,11 @@ export default function IncomingAuctions() {
                                 <p className="font-black uppercase text-center text-2xl">{hora}</p>
                             </div>
 
-                            <img src={`${import.meta.env.VITE_SALEX_BACK_API_URL}${auction.foto}`} alt={`${auction.marca} ${auction.modelo}`} className="w-full h-56 md:h-64 lg:h-72 object-cover" />
+                            <img src={`${import.meta.env.VITE_SALEX_BACK_API_URL}${auction.foto_auto}`} alt={`${auction.marca} ${auction.modelo}`} className="w-full h-56 md:h-64 lg:h-72 object-cover" />
                             <div className="py-5 flex justify-center">
                                 {user ?
                                     (
-                                        <Link to={`/subasta/${auction.id}`} className="bg-[#FFC940] p-2 text-black rounded-md mt-6 lg:mt-10 text-lg lg:text-xl">
+                                        <Link to={`/auction/${auction.id}`} className="bg-[#FFC940] p-2 text-black rounded-md mt-6 lg:mt-10 text-lg lg:text-xl">
                                             Ver Detalles
                                         </Link>)
 

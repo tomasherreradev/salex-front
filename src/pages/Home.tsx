@@ -16,7 +16,8 @@ const Home = () => {
       foto: CarImageExample,
       year: 2020,
       marca: 'Cadillac',
-      modelo: 'Escalade ESV'
+      modelo: 'Escalade ESV',
+      placa: '432555'
     },
     {
       id: 2,
@@ -24,7 +25,8 @@ const Home = () => {
       foto: CarImageExample,
       year: 2018,
       marca: 'BMW',
-      modelo: 'X5'
+      modelo: 'X5',
+      placa: '432555'
     },
     {
       id: 3,
@@ -32,7 +34,8 @@ const Home = () => {
       foto: CarImageExample,
       year: 2022,
       marca: 'Audi',
-      modelo: 'Q7'
+      modelo: 'Q7',
+      placa: '432555'
     },
     {
       id: 4,
@@ -40,7 +43,8 @@ const Home = () => {
       foto: CarImageExample,
       year: 2019,
       marca: 'Mercedes-Benz',
-      modelo: 'GLC'
+      modelo: 'GLC',
+      placa: '432555'
     }
   ]
 
